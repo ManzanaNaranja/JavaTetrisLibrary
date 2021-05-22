@@ -1,5 +1,6 @@
 package ui;
 
+import ai.Brain;
 import tetris.Game;
 import ui.input.KeyManager;
 
@@ -17,11 +18,31 @@ public class Main {
 		renderer.start();
 		
 		while(game.isOver() == false) {
-			game.moveDown();
-			Thread.sleep(300);
-			window.rightPanel.setScore(game.getScore());
-			window.rightPanel.setLinesCleared(game.getLinesCleared());	
-		}	
+		//	window.leftPanel.position(game.board);
+			Brain.Move[] moves = game.moves();
+			for(Brain.Move m : moves) {
+				game.board.place(m);
+			//	window.leftPanel.position(game.board);
+				Thread.sleep(100);
+				game.board.undo();
+				//window.leftPanel.position(game.board);
+			}
+			game.move(moves[(int)(Math.random() * moves.length)]);
+			//window.leftPanel.position(game.board);
+			Thread.sleep(100);
+		}
+		
+//		while(game.isOver() == false) {
+			
+
+			
+			
+			
+//			game.moveDown();
+//			Thread.sleep(300);
+//			window.rightPanel.setScore(game.getScore());
+//			window.rightPanel.setLinesCleared(game.getLinesCleared());	
+//		}	
 	}
 
 

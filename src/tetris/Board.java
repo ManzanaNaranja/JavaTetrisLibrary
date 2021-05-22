@@ -3,6 +3,7 @@ package tetris;
 import java.util.ArrayList;
 
 import ai.Brain;
+import ai.Brain.Move;
 import helpers.AUtils;
 
 public class Board {
@@ -175,5 +176,9 @@ public class Board {
 			this.undo();
 		}
 		return --y;
+	}
+
+	public void place(Move m) {
+		this.place(m.piece, m.x, m.y);		
 	}
 }

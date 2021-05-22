@@ -81,6 +81,11 @@ public class Game {
 		this.finalizePlacement();
 	}
 	
+	public void move(Brain.Move m) {
+		this.board.place(m);
+		this.finalizePlacement();
+	}
+	
 	public void finalizePlacement() {
 		if(gameOver == true) return;
 		int lines = board.clearLines();
