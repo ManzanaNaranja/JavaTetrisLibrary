@@ -1,5 +1,5 @@
 # JavaTetrisLibrary
-Java Tetris library. Comes with an optional UI for rendering the game.
+Includes optional UI and keyinput handling
 
 ## Examples
 
