@@ -1,5 +1,7 @@
 package tetris;
 
+import ai.Brain;
+
 public class Game {
 	
 	public PieceInstance currentPiece;
@@ -94,6 +96,10 @@ public class Game {
 			this.gameOver = true;
 			board.setAllPieces(Piece.Dead);
 		}
+	}
+	
+	public Brain.Move[] moves() {
+		return board.moves(currentPiece);
 	}
 	
 	private void updateScore(int lines) {

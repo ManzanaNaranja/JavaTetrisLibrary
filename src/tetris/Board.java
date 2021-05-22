@@ -1,5 +1,8 @@
 package tetris;
 
+import java.util.ArrayList;
+
+import ai.Brain;
 import helpers.AUtils;
 
 public class Board {
@@ -122,6 +125,28 @@ public class Board {
 			}
 		}
 		return result;
+	}
+	
+	public Brain.Move[] moves(PieceInstance p) {
+		ArrayList<Brain.Move> moves = new ArrayList<>();
+		int xBound = Board.COLS - p.getWidth()+1;
+		int shift = p.getGap();
+		for(int spin = 0; spin < 4; spin++) {
+			xBound = Board.COLS - p.getWidth()+1;
+			shift = p.getGap();
+			for(int x = 0-shift; x < xBound-shift; x++) {
+				int y = this.dropHeight(p, x);
+				moves.add(new Brain.Move((PieceInstance) p.clone(),x,y));
+				
+			}
+			p.rotate();
+	}
+		
+		Brain.Move[] m = new Brain.Move[moves.size()];
+		for(int i = 0; i < m.length; i++) {
+			m[i] = moves.get(i);
+		}
+		return m;
 	}
 	
 	public void commit() {

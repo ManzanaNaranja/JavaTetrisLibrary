@@ -8,32 +8,30 @@ public class Main {
 	Window window;
 	Renderer renderer;
 	
-	public Main() {
+	public Main() throws InterruptedException {
 		game = new Game();
 		window = new Window(700, 700);
 		renderer = new Renderer(window,game);
-		
 		window.contentPane.addKeyListener(new KeyManager(game));
 		window.contentPane.grabFocus();
 		renderer.start();
 		
 		while(game.isOver() == false) {
 			game.moveDown();
-			try {
-				Thread.sleep(300);
-				window.rightPanel.setScore(game.getScore());
-				window.rightPanel.setLinesCleared(game.getLinesCleared());
-				
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			Thread.sleep(300);
+			window.rightPanel.setScore(game.getScore());
+			window.rightPanel.setLinesCleared(game.getLinesCleared());	
 		}	
 	}
 
 
 	public static void main(String[] args) {
-		new Main();
+		try {
+			new Main();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }
