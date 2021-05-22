@@ -3,7 +3,7 @@ Java Tetris library. Comes with an optional UI for rendering the game.
 
 ## Examples
 
-## Create a Game
+## Create a Game with UI
 
 ```java
 import tetris.Game;
@@ -31,3 +31,16 @@ public class Main {
 	}
 }
   ```
+  
+## random moves
+
+```
+	Game game = new Game();
+	while(game.isOver() == false) {
+	        Move[] moves = game.moves();
+		Move m = moves[(int)(Math.random() * moves.length)];
+		game.move(m);
+	}
+	System.out.println(game.board);
+
+```
