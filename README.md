@@ -6,13 +6,13 @@ Java Tetris library. Comes with an optional UI for rendering the game.
 ## random moves
 
 ```java
-	Game game = new Game();
-	while(game.isOver() == false) {
-	        Move[] moves = game.moves();
-		Move m = moves[(int)(Math.random() * moves.length)];
-		game.move(m);
-	}
-	System.out.println(game.board);
+Game game = new Game();
+while(game.isOver() == false) {
+	Move[] moves = game.moves();
+	Move m = moves[(int)(Math.random() * moves.length)];
+	game.move(m);
+}
+System.out.println(game.board);
 
 ```
 
