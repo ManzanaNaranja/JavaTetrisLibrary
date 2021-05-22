@@ -29,6 +29,8 @@ while(game.isOver() == false) {
 }
 ```
 
+![gif](./images/iteration.gif)
+
 ## Create a Game with UI
 
 ```java
