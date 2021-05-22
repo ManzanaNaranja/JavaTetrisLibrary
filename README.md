@@ -5,7 +5,7 @@ Java Tetris library. Comes with an optional UI for rendering the game.
 
 ## Create a Game
 
-```
+```java
 import tetris.Game;
 import ui.input.KeyManager;
 
