@@ -59,7 +59,7 @@ public class Main {
 }
 ```
 
-##TODO
+## TODO
 - fix rendering problems
 - debug ai evaulation function methods
 - allow AI to work without having to do a board.undo()
