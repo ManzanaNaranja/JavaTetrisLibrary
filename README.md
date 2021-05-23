@@ -48,8 +48,7 @@ while(game.isOver() == false) {
   window.rightPanel.setLinesCleared(game.getLinesCleared());		
 }
 ```
-
-
+![gif](./images/aiplaying.gif)
 
 ## Create a Game with UI
 
