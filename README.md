@@ -28,8 +28,28 @@ while(game.isOver() == false) {
   Thread.sleep(300);	
 }
 ```
-
 ![gif](./images/iteration.gif)
+
+## use provided ai
+
+```java
+FurryBrain b = new FurryBrain();
+while(game.isOver() == false) {
+  game.moveDown();
+  if(game.currentPiece.position.y == 0) {
+    game.board.undo();
+    Brain.Move m = b.bestMove(game);
+    game.currentPiece.rotation = m.piece.rotation;
+    game.currentPiece.position.x = m.x;
+    window.leftPanel.position(game.board);
+  }
+  Thread.sleep(30);
+  window.rightPanel.setScore(game.getScore());
+  window.rightPanel.setLinesCleared(game.getLinesCleared());		
+}
+```
+
+
 
 ## Create a Game with UI
 
