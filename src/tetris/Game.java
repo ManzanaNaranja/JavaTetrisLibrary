@@ -62,8 +62,13 @@ public class Game {
 		board.undo();
 		boolean result = board.place(currentPiece, currentPiece.position.x, ++currentPiece.position.y);
 		if(result == false) {
-			board.place(currentPiece, currentPiece.position.x, --currentPiece.position.y);
-			this.finalizePlacement();
+			boolean upplacement = board.place(currentPiece, currentPiece.position.x, --currentPiece.position.y);
+			if(upplacement == false) {
+				this.setGameOver();
+			} else {
+				this.finalizePlacement();
+			}
+			
 		}
 	}
 	
@@ -94,8 +99,7 @@ public class Game {
 		this.currentPiece = bag.pick();	
 		boolean newPlacement = board.place(currentPiece, currentPiece.position.x, currentPiece.position.y);
 		if(newPlacement == false) {
-			this.gameOver = true;
-			board.setAllPieces(Piece.Dead);
+			this.setGameOver();
 		}
 	}
 	
@@ -132,6 +136,9 @@ public class Game {
 		return this.gameOver;
 	}
 	
-	
-	
+	private void setGameOver() {
+		board.setAllPieces(Piece.Dead);
+		board.commit();
+		this.gameOver = true;
+	}	
 }
