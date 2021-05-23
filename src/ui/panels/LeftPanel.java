@@ -15,7 +15,7 @@ public class LeftPanel extends JPanel{
 	private Board board;
 	
 	public LeftPanel() {
-		setBackground(Color.PINK);
+		setBackground(Color.black);
 		setBounds(10, 10, 270, 540);
 	}
 	

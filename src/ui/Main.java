@@ -22,12 +22,20 @@ public class Main {
 		while(game.isOver() == false) {
 		
 			game.moveDown();
-			game.board.undo();
-			game.move(b.bestMove(game));
+		//	game.board.undo();
+			// b.bestMove(game);
+			
+			if(game.currentPiece.position.y == 0) {
+				game.board.undo();
+				Brain.Move m = b.bestMove(game);
+				game.currentPiece.rotation = m.piece.rotation;
+				game.currentPiece.position.x = m.x;
+				window.leftPanel.position(game.board);
+			}
 			
 			
 			
-			Thread.sleep(50);
+			Thread.sleep(30);
 			window.rightPanel.setScore(game.getScore());
 			window.rightPanel.setLinesCleared(game.getLinesCleared());	
 		}	
