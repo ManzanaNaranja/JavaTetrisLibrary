@@ -5,10 +5,8 @@ import ai.Brain;
 public class Game {
 	
 	public PieceInstance currentPiece;
-	public Board board;
-	
+	public Board board;	
 	private PieceInstanceBag bag;
-	private int x = 4, y = 0;
 	private boolean gameOver = false;
 	
 	private int score = 0;
@@ -21,7 +19,7 @@ public class Game {
 	
 	public void reset() {
 		this.initilizeGame();
-		board.place(currentPiece, x, y);
+		board.place(currentPiece, currentPiece.position.x, currentPiece.position.y);
 	}
 	
 	private void initilizeGame() {
@@ -33,9 +31,9 @@ public class Game {
 	public void moveRight() {
 		if(gameOver == true) return;
 		board.undo();
-		boolean placement = board.place(currentPiece, ++x, y);
+		boolean placement = board.place(currentPiece, ++currentPiece.position.x, currentPiece.position.y);
 		if(placement == false) {
-			board.place(currentPiece, --x, y);
+			board.place(currentPiece, --currentPiece.position.x, currentPiece.position.y);
 		}
 	}
 	
@@ -43,28 +41,28 @@ public class Game {
 		if(gameOver == true) return;
 		board.undo();
 		currentPiece.rotate();
-		boolean placement = board.place(currentPiece, x, y);
+		boolean placement = board.place(currentPiece, currentPiece.position.x, currentPiece.position.y);
 		if(placement == false) {
 			currentPiece.unrotate();
-			board.place(currentPiece, x, y);
+			board.place(currentPiece, currentPiece.position.x, currentPiece.position.y);
 		}
 	}
 	
 	public void moveLeft() {
 		if(gameOver == true) return;
 		board.undo();
-		boolean placement = board.place(currentPiece, --x, y);
+		boolean placement = board.place(currentPiece, --currentPiece.position.x, currentPiece.position.y);
 		if(placement == false) {
-			board.place(currentPiece, ++x, y);
+			board.place(currentPiece, ++currentPiece.position.x, currentPiece.position.y);
 		}
 	}
 	
 	public void moveDown() {
 		if(gameOver == true) return;
 		board.undo();
-		boolean result = board.place(currentPiece, x, ++y);
+		boolean result = board.place(currentPiece, currentPiece.position.x, ++currentPiece.position.y);
 		if(result == false) {
-			board.place(currentPiece, x, --y);
+			board.place(currentPiece, currentPiece.position.x, --currentPiece.position.y);
 			this.finalizePlacement();
 		}
 	}
@@ -74,10 +72,10 @@ public class Game {
 		boolean result = false;
 		do {
 			board.undo();
-			result = board.place(currentPiece, x, ++y);
+			result = board.place(currentPiece, currentPiece.position.x, ++currentPiece.position.y);
 		} while(result);
 		board.undo();
-		board.place(currentPiece, x, --y);
+		board.place(currentPiece, currentPiece.position.x, --currentPiece.position.y);
 		this.finalizePlacement();
 	}
 	
@@ -94,9 +92,7 @@ public class Game {
 		
 		board.commit();
 		this.currentPiece = bag.pick();	
-		x = 4;
-		y = 0;
-		boolean newPlacement = board.place(currentPiece, x, y);
+		boolean newPlacement = board.place(currentPiece, currentPiece.position.x, currentPiece.position.y);
 		if(newPlacement == false) {
 			this.gameOver = true;
 			board.setAllPieces(Piece.Dead);

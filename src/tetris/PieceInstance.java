@@ -6,13 +6,13 @@ import helpers.ANumbers;
 
 public class PieceInstance implements Cloneable {
 	private Piece piece;
-	private int rotation;
-	private Point position;
+	public int rotation;
+	public Point position;
 	
 	public PieceInstance(Piece piece) {
 		this.piece = piece;
 		this.rotation = 0;
-		position = new Point(0, 0);
+		position = new Point(4, 0);
 	}
 	
 	public void setPosition(int x, int y) {

@@ -2,40 +2,33 @@ package ai;
 
 import ai.Brain.Move;
 import tetris.Board;
+import tetris.Game;
 import tetris.PieceInstance;
 
 public class FurryBrain implements Brain{
 
 	@Override
-	public Move bestMove(Board board, PieceInstance piece) {
-		double bestScore = 1e20;
-		int bestX = 0;
-		int bestY = 0;
-		PieceInstance bestPiece = null;
-
-		board.commit();
-		for(Brain.Move m : board.moves(piece)) {
-			board.place(piece, m.x,m.y);
-			board.clearLines();
-			double score = evaluateBoard(board);
-			if(score < bestScore) {
-				bestScore = score;
-				bestX = m.x;
-				bestY = m.y;
-				bestPiece = m.piece;
+	public Brain.Move bestMove(Game game) {
+		double bestScore = 10000000;
+		Brain.Move bestMove = null;
+		for(Brain.Move move : game.moves()) {
+			game.board.place(move);
+			double eval = this.evaluateBoard(game.board);
+			if(eval < bestScore) {
+				bestScore = eval;
+				bestMove = move;
 			}
-			board.undo();
+			game.board.undo();
 		}
-		System.out.println(bestScore);
-		return new Brain.Move(bestPiece, bestX, bestY, bestScore);
+		return bestMove;
 		
 	}
 
-	private double evaluateBoard(Board board) {
+	public double evaluateBoard(Board board) {
 		 int holes = getHoles(board);
-		    int maxHeight = getMaxHeight(board);
-		    double avgHeight = getAverageHeight(board);
-		    return maxHeight * 80 + holes;
+		 int maxHeight = getMaxHeight(board);
+		 double avgHeight = getAverageHeight(board);
+		 return 1.25 * holes + maxHeight * 40 + avgHeight * 8;
 	}
 	
 	private int getMaxHeight(Board board) {

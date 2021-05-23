@@ -1,6 +1,7 @@
 package ai;
 
 import tetris.Board;
+import tetris.Game;
 import tetris.PieceInstance;
 
 public interface Brain {
@@ -21,6 +22,6 @@ public interface Brain {
 		}
 	}
 	
-	public Brain.Move bestMove(Board board, PieceInstance piece); 
+	public Brain.Move bestMove(Game game); 
 	
 }
