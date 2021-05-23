@@ -85,8 +85,12 @@ public class Game {
 	}
 	
 	public void move(Brain.Move m) {
-		this.board.place(m);
-		this.finalizePlacement();
+		boolean placement = this.board.place(m);
+		if(placement == false) {
+			this.setGameOver();
+		} else {
+			this.finalizePlacement();
+		}
 	}
 	
 	public void finalizePlacement() {

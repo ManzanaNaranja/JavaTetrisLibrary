@@ -178,7 +178,7 @@ public class Board {
 		return --y;
 	}
 
-	public void place(Move m) {
-		this.place(m.piece, m.x, m.y);		
+	public boolean place(Move m) {
+		return this.place(m.piece, m.x, m.y);		
 	}
 }

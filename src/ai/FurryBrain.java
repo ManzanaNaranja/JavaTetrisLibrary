@@ -6,6 +6,13 @@ import tetris.Game;
 import tetris.PieceInstance;
 
 public class FurryBrain implements Brain{
+	
+	private double w1 = -.2256;
+	private double w2 = .0867;
+	private double w3 = .6152;
+	private double w4 = -.1584;
+	private double w5 = .1545;
+	private double w6 = .0215;
 
 	@Override
 	public Brain.Move bestMove(Game game) {
@@ -13,10 +20,11 @@ public class FurryBrain implements Brain{
 		Brain.Move bestMove = null;
 		for(Brain.Move move : game.moves()) {
 			game.board.place(move);
-			double eval = this.evaluateBoard(game.board);
+			double eval = this.evaluateBoard(game);
 			if(eval < bestScore) {
 				bestScore = eval;
 				bestMove = move;
+				bestMove.score = bestScore;
 			}
 			game.board.undo();
 		}
@@ -24,25 +32,55 @@ public class FurryBrain implements Brain{
 		
 	}
 
-	public double evaluateBoard(Board board) {
+	public double evaluateBoard(Game game) {
+		 Board board = game.board;
+		 int lines = game.board.clearLines();
 		 int holes = getHoles(board);
 		 int maxHeight = getMaxHeight(board);
+		 int relativeHeight = this.relativeHeight(board);
+		 int cumulativeHeight = this.cumulativeHeights(board);
 		 double avgHeight = getAverageHeight(board);
-		 return 1.25 * holes + maxHeight * 40 + avgHeight * 8;
+		 int roughness = this.roughness(board);
+		  return w1 * lines + w2 * maxHeight + w3 * cumulativeHeight + w4 * relativeHeight + w5 * holes + w6 * roughness;
 	}
 	
-	private int getMaxHeight(Board board) {
+	public int relativeHeight(Board board) {
+		return getMaxHeight(board) - getMinHeight(board);
+	}
+	
+	public int getMaxHeight(Board board) {
 	    int maxHeight = -1;
 	    int[] heights = board.heights();
 	    for(int i = 0; i < heights.length; i++) {
 	        if(heights[i] > maxHeight) {
-	          maxHeight = heights[i];
+	        	maxHeight = heights[i];
 	        }
 	    }
 	    return maxHeight;
 	}
 	
-	 private double getAverageHeight(Board board) {
+	public int getMinHeight(Board board) {
+	    int minHeight = 99999999;
+	    int[] heights = board.heights();
+	    for(int i = 0; i < heights.length; i++) {
+	        if(heights[i] < minHeight) {
+	        	minHeight = heights[i];
+	        }
+	    }
+	    return minHeight;
+	}
+	
+	public int cumulativeHeights(Board board) {
+		int sum = 0;
+		int[] heights = board.heights();
+	    for(int i = 0; i < heights.length; i++) {
+	        sum += heights[i];
+	    }
+	    return sum;
+	}
+	
+	
+	public double getAverageHeight(Board board) {
 		    double sum = 0;
 		    int[] heights = board.heights();
 		    for(int i = 0; i < heights.length; i++) {
@@ -53,7 +91,17 @@ public class FurryBrain implements Brain{
 		    
 	 }
 	 
-	 private int getHoles(Board board) {
+	public int roughness(Board board) {
+		int sum = 0;
+		int[] heights = board.heights();
+		for(int i = 1; i < heights.length-1; i++) {
+			sum += Math.abs(heights[i-1] - heights[i]);
+			sum += Math.abs(heights[i+1] - heights[i]);
+		}
+		return sum;
+		
+	}
+	public int getHoles(Board board) {
 		    int holes = 0;
 		    int[] heights = board.heights();
 		    

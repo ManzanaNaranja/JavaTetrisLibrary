@@ -20,17 +20,19 @@ public class AiGame {
 		window.contentPane.grabFocus();
 		renderer.start();
 		FurryBrain b = new FurryBrain();
+		Brain.Move m = null;
 		
 		while(game.isOver() == false) {
 			game.moveDown();
 			if(game.currentPiece.position.y == 0) {
 				game.board.undo();
-				Brain.Move m = b.bestMove(game);
+				m = b.bestMove(game);
 				game.currentPiece.rotation = m.piece.rotation;
 				game.currentPiece.position.x = m.x;
 				 window.leftPanel.position(game.board);
 			}	
-			Thread.sleep(30);
+			Thread.sleep(10);
+			if(m != null) window.rightPanel.setEval(m.score);
 			window.rightPanel.setScore(game.getScore());
 			window.rightPanel.setLinesCleared(game.getLinesCleared());			
 		}	
