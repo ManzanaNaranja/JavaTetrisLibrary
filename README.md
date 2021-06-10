@@ -81,9 +81,5 @@ public class Main {
   }
 }
 ```
-
-## TODO
-- fix rendering problems
-- add downloadable .jar files
   
 
