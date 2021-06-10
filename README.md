@@ -1,7 +1,9 @@
 # JavaTetrisLibrary
 Java library used to keep track of the Tetris board. 
 
-[link](https://github.com/ManzanaNaranja/JavaTetrisLibrary/releases/download/0.0.0/tetrislib.jar)
+## Getting Started
+1) Download current version [here](https://github.com/ManzanaNaranja/JavaTetrisLibrary/releases/download/0.0.0/tetrislib.jar)
+2) reference the jars externally to your project or add them in directly
 
 ## Examples
 
