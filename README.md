@@ -1,5 +1,7 @@
 # JavaTetrisLibrary
-Includes optional UI and keyinput handling
+Java library used to keep track of the Tetris board. 
+
+[link](https://github.com/ManzanaNaranja/JavaTetrisLibrary/releases/download/0.0.0/tetrislib.jar)
 
 ## Examples
 
