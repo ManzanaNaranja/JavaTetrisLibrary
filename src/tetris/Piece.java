@@ -11,9 +11,7 @@ public enum Piece {
 	O(new int[] {0xCC00, 0xCC00, 0xCC00, 0xCC00}, "#E39F02", 4),
 	S(new int[] {0x6C00, 0x4620, 0x06C0, 0x8C40}, "#59B101", 5),
 	T(new int[] {0x4E00, 0x4640, 0x0E40, 0x4C40}, "#AF298A", 6),
-	Z(new int[] {0xC600, 0x2640, 0x0C60, 0x4C80}, "#D70F37", 7),
-	Empty(null, "#000000", 0),
-	Dead(null, "#6A6A6A", -1);
+	Z(new int[] {0xC600, 0x2640, 0x0C60, 0x4C80}, "#D70F37", 7);
 	private final int[] blocks;
 	private final Color color;
 	private int value;
@@ -52,15 +50,4 @@ public enum Piece {
 		}
 		return String.join("", arr);
 	}
-	
-	public static Piece[] getAll() {
-		Piece[] values = Piece.values();
-		Piece[] arr = new Piece[values.length-1];
-		for(int i = 0; i < values.length-1; i++) {
-			arr[i] = values[i];
-		}
-		return arr;
-	}
-	
-
 }

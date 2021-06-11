@@ -7,12 +7,12 @@ import tetris.PieceInstance;
 
 public class FurryBrain implements Brain{
 	
-	private double w1 = -.2256;
-	private double w2 = .0867;
-	private double w3 = .6152;
-	private double w4 = -.1584;
-	private double w5 = .1545;
-	private double w6 = .0215;
+	private double w1 = -0.22568649650722883;
+	private double w2 = 0.08679520494876472;
+	private double w3 = 0.6152727732730796;
+	private double w4 = -0.15842464424735841;
+	private double w5 = 0.15452215909537684;
+	private double w6 = 0.021586109522043928;
 
 	@Override
 	public Brain.Move bestMove(Game game) {
@@ -40,7 +40,7 @@ public class FurryBrain implements Brain{
 		 int relativeHeight = this.relativeHeight(board);
 		 int cumulativeHeight = this.cumulativeHeights(board);
 		 double avgHeight = getAverageHeight(board);
-		 int roughness = this.roughness(board);
+		 double roughness = this.roughness(board);
 		  return w1 * lines + w2 * maxHeight + w3 * cumulativeHeight + w4 * relativeHeight + w5 * holes + w6 * roughness;
 	}
 	
@@ -91,14 +91,16 @@ public class FurryBrain implements Brain{
 		    
 	 }
 	 
-	public int roughness(Board board) {
+	public double roughness(Board board) {
 		int sum = 0;
 		int[] heights = board.heights();
 		for(int i = 1; i < heights.length-1; i++) {
-			sum += Math.abs(heights[i-1] - heights[i]);
-			sum += Math.abs(heights[i+1] - heights[i]);
+			int d1 = Math.abs(heights[i-1] - heights[i]);
+			int d2 = Math.abs(heights[i+1] - heights[i]);
+			sum += d1;
+			sum += d2;
 		}
-		return sum;
+		return Math.pow(sum, 1.5);
 		
 	}
 	public int getHoles(Board board) {

@@ -10,7 +10,7 @@ public class PieceInstanceBag {
 	}
 	
 	public void refill() {
-		Piece[] pieces = Piece.getAll();
+		Piece[] pieces = Piece.values();
 		for(int i = 0; i < pieces.length-1; i++) {
 			for(int j = 0; j < 4; j++) {
 				contents.add(new PieceInstance(pieces[i]));

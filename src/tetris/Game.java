@@ -58,9 +58,11 @@ public class Game {
 	}
 	
 	public void moveDown() {
+		
 		if(gameOver == true) return;
 		board.undo();
 		boolean result = board.place(currentPiece, currentPiece.position.x, ++currentPiece.position.y);
+		
 		if(result == false) {
 			boolean upplacement = board.place(currentPiece, currentPiece.position.x, --currentPiece.position.y);
 			if(upplacement == false) {
@@ -83,7 +85,6 @@ public class Game {
 		board.place(currentPiece, currentPiece.position.x, --currentPiece.position.y);
 		this.finalizePlacement();
 	}
-	
 	public void move(Brain.Move m) {
 		boolean placement = this.board.place(m);
 		if(placement == false) {
@@ -141,7 +142,7 @@ public class Game {
 	}
 	
 	private void setGameOver() {
-		board.setAllPieces(Piece.Dead);
+		board.setAllPieces(Piece.L);
 		board.commit();
 		this.gameOver = true;
 	}	

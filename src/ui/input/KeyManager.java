@@ -6,18 +6,15 @@ import java.awt.event.KeyListener;
 import tetris.Game;
 
 
-public class KeyManager extends Thread implements KeyListener{
+public class KeyManager implements KeyListener{
 	
 	private boolean[] keys, justPressed, cantPress;
 	public static boolean W, A, S,D,Space;
 	public static boolean JW,JA,JS,JD, JSpace;
-	private Game game;
-	public KeyManager(Game game) {
-		this.game = game;
+	public KeyManager() {
 		keys = new boolean[256];
 		justPressed = new boolean[256];
 		cantPress = new boolean[256];
-		this.start();
 	}
 
 	public void tick() {
@@ -55,7 +52,6 @@ public class KeyManager extends Thread implements KeyListener{
 	}
 	@Override
 	public void keyTyped(KeyEvent e) {
-		// TODO Auto-generated method stub
 		
 	}
 
@@ -73,21 +69,4 @@ public class KeyManager extends Thread implements KeyListener{
 		keys[e.getKeyCode()] = false;
 		
 	}
-	
-	public void run() {
-		while(true) {
-			this.tick();
-			if(KeyManager.JSpace) game.drop();
-			if(KeyManager.JD) game.moveRight();
-			if(KeyManager.JA) game.moveLeft();
-			if(KeyManager.JW) game.rotate();
-			try {
-				Thread.sleep(17);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-	}
-
 }
