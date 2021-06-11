@@ -29,15 +29,19 @@ public class NormalGame extends Loop{
 			window.rightPanel.setLinesCleared(game.getLinesCleared());	
 		}	
 	};
+
 	
 	Job input = new Job() {
 		@Override
 		public void dothis() {
 			keyManager.tick();
 			if(KeyManager.JW) game.rotate(); 
+			
 			if(KeyManager.JA) game.moveLeft();
 			if(KeyManager.JD) game.moveRight();
+				
 			if(KeyManager.JS) game.moveDown();
+			
 			if(KeyManager.JSpace) game.drop();
 			window.leftPanel.position(game.board);
 		}
@@ -47,7 +51,8 @@ public class NormalGame extends Loop{
 		initialize();
 		this.addJob(gravity, 300);
 		this.addJob(input, 17);
-		this.start();			
+		this.start();	
+		
 	}	
 	
 	private void initialize() {
