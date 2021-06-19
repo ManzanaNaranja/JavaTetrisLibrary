@@ -134,19 +134,17 @@ public class Game implements GameActions, PlayerActions, GameInfo{
 
 	@Override
 	public boolean move(String m) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
-	public void undo() { //NEEDS TO FOLLOW SAME PATH OF PIECES AFTER UNDOING
+	public void undo() { 
 		if(history.undo() == null) return;
 		GameData d = history.getLast();
 		this.board = new Board(AUtils.deepCopy(d.getBoard()));
 		this.currentPiece = d.getCurrentPiece();
 		this.nextPieces.clear();
 		this.nextPieces.addAll(history.getPieceHistory());
-//		bag.setnext(d.getNextPiece());
 	}
 
 	@Override
@@ -174,7 +172,7 @@ public class Game implements GameActions, PlayerActions, GameInfo{
 		this.linesCleared += lines;
 		
 		board.commit();
-		this.currentPiece = this.pick_next_piece();	// CHECK IF PIECES ON A STACK ARE READY TO GO, ELSE PICK FROM BAG
+		this.currentPiece = this.pick_next_piece();	
 		history.add(new GameData(this.board.getMemory(), this.currentPiece.getPiece(), this.next_piece().getPiece()));
 		boolean newPlacement = board.place(currentPiece, currentPiece.position.x, currentPiece.position.y);
 		if(newPlacement == false) {
