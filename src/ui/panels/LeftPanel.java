@@ -2,27 +2,22 @@ package ui.panels;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 
 import javax.swing.JPanel;
-
-import ai.Brain;
-import ai.Brain.Move;
 import tetris.Board;
-import tetris.Piece;
-import tetris.PieceInstance;
+import tetris.piece.Piece;
 import ui.settings.Settings;
 
 public class LeftPanel extends JPanel{
 	
-	private Board board;
+	private int[][] board;
 	
 	public LeftPanel() {
 		setBackground(Color.black);
 		setBounds(10, 10, 270, 540);
 	}
 	
-	public void position(Board board) {
+	public void position(int[][] board) {
 		this.board = board;
 		this.repaint();
 	}
@@ -34,8 +29,8 @@ public class LeftPanel extends JPanel{
 		
 		for(int y =  Board.ROW_START; y < Board.ROWS; y++) {
 			for(int x = 0; x < Board.COLS; x++) {
-				if(board.memory[y][x] != 0)
-					paintHelper(g, Piece.getPieceByValue(board.memory[y][x]).getColor(), Settings.BORDER_COLOR, x, y);
+				if(board[y][x] != 0)
+					paintHelper(g, Piece.getPieceByValue(board[y][x]).getColor(), Settings.BORDER_COLOR, x, y);
 			}
 		}
 		

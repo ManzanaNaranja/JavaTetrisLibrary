@@ -1,54 +1,87 @@
 package tetris;
 
-import ai.Brain;
+import java.util.Stack;
 
-public class Game {
+import helpers.AUtils;
+import tetris.piece.Piece;
+import tetris.piece.PieceInstance;
+import tetris.piece.PieceInstanceBag;
+import tetris.structure.GameActions;
+import tetris.structure.GameInfo;
+import tetris.structure.PlayerActions;
+
+public class Game implements GameActions, PlayerActions, GameInfo{
 	
-	public PieceInstance currentPiece;
-	public Board board;	
 	private PieceInstanceBag bag;
-	private boolean gameOver = false;
-	
-	private int score = 0;
+	private PieceInstance currentPiece;
+	private Stack<PieceInstance> nextPieces;
+	private Board board;
 	private int linesCleared = 0;
-	
+	private boolean gameOver = false;
+	private History history;
 	
 	public Game() {
 		this.reset();
 	}
-	
-	public void reset() {
-		this.initilizeGame();
-		board.place(currentPiece, currentPiece.position.x, currentPiece.position.y);
+
+	@Override
+	public boolean game_over() {
+		return this.gameOver;
+	}
+
+	@Override
+	public int[][] board() {
+		return board.getMemory();
+	}
+
+	@Override
+	public void ascii() {
+		System.out.println(this.toString());		
+	}
+
+	@Override
+	public PieceInstance next_piece() { 
+		if(nextPieces.isEmpty() == false) {
+			return this.nextPieces.peek();
+		}
+		return bag.getnext();
 	}
 	
-	private void initilizeGame() {
-		bag = new PieceInstanceBag();
-		this.currentPiece = bag.pick();
-		this.board = new Board();
+	private PieceInstance pick_next_piece() {
+		if(nextPieces.isEmpty() == false) {
+			return this.nextPieces.pop();
+		}
+		return bag.pick();
 	}
-	
-	public void moveRight() {
+
+	@Override
+	public int get(int x, int y) {
+		return board.getBlock(x, y);
+	}
+
+	@Override
+	public String[] moves() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int lines_cleared() {
+		return this.linesCleared;
+	}
+
+	@Override
+	public void right() {
 		if(gameOver == true) return;
 		board.undo();
 		boolean placement = board.place(currentPiece, ++currentPiece.position.x, currentPiece.position.y);
 		if(placement == false) {
 			board.place(currentPiece, --currentPiece.position.x, currentPiece.position.y);
-		}
+		}	
 	}
-	
-	public void rotate() {
-		if(gameOver == true) return;
-		board.undo();
-		currentPiece.rotate();
-		boolean placement = board.place(currentPiece, currentPiece.position.x, currentPiece.position.y);
-		if(placement == false) {
-			currentPiece.unrotate();
-			board.place(currentPiece, currentPiece.position.x, currentPiece.position.y);
-		}
-	}
-	
-	public void moveLeft() {
+
+	@Override
+	public void left() {
 		if(gameOver == true) return;
 		board.undo();
 		boolean placement = board.place(currentPiece, --currentPiece.position.x, currentPiece.position.y);
@@ -56,10 +89,10 @@ public class Game {
 			board.place(currentPiece, ++currentPiece.position.x, currentPiece.position.y);
 		}
 	}
-	
-	public void moveDown() {
-		
-		if(gameOver == true) return;
+
+	@Override
+	public void down() {
+		if(this.game_over() == true) return;
 		board.undo();
 		boolean result = board.place(currentPiece, currentPiece.position.x, ++currentPiece.position.y);
 		
@@ -73,7 +106,20 @@ public class Game {
 			
 		}
 	}
-	
+
+	@Override
+	public void rotate() {
+		if(gameOver == true) return;
+		board.undo();
+		currentPiece.rotate();
+		boolean placement = board.place(currentPiece, currentPiece.position.x, currentPiece.position.y);
+		if(placement == false) {
+			currentPiece.unrotate();
+			board.place(currentPiece, currentPiece.position.x, currentPiece.position.y);
+		}		
+	}
+
+	@Override
 	public void drop() {
 		if(gameOver == true) return;
 		boolean result = false;
@@ -85,65 +131,60 @@ public class Game {
 		board.place(currentPiece, currentPiece.position.x, --currentPiece.position.y);
 		this.finalizePlacement();
 	}
-	public void move(Brain.Move m) {
-		boolean placement = this.board.place(m);
-		if(placement == false) {
-			this.setGameOver();
-		} else {
-			this.finalizePlacement();
-		}
+
+	@Override
+	public boolean move(String m) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void undo() { //NEEDS TO FOLLOW SAME PATH OF PIECES AFTER UNDOING
+		if(history.undo() == null) return;
+		GameData d = history.getLast();
+		this.board = new Board(AUtils.deepCopy(d.getBoard()));
+		this.currentPiece = d.getCurrentPiece();
+		this.nextPieces.clear();
+		this.nextPieces.addAll(history.getPieceHistory());
+//		bag.setnext(d.getNextPiece());
+	}
+
+	@Override
+	public void reset() {
+		this.initilizeGame();
+		board.place(currentPiece, currentPiece.position.x, currentPiece.position.y);
 	}
 	
-	public void finalizePlacement() {
-		if(gameOver == true) return;
+	public String toString() {
+		return this.board.toString();
+	}
+	
+	private void initilizeGame() {
+		nextPieces = new Stack<PieceInstance>();
+		history = new History();
+		bag = new PieceInstanceBag();
+		this.currentPiece = this.pick_next_piece();
+		this.board = new Board();
+		history.add(new GameData(this.board.getMemory(), this.currentPiece.getPiece(), this.next_piece().getPiece()));
+	}
+	
+	private void finalizePlacement() {
+		if(this.game_over() == true) return;
 		int lines = board.clearLines();
 		this.linesCleared += lines;
-		updateScore(lines);
 		
 		board.commit();
-		this.currentPiece = bag.pick();	
+		this.currentPiece = this.pick_next_piece();	// CHECK IF PIECES ON A STACK ARE READY TO GO, ELSE PICK FROM BAG
+		history.add(new GameData(this.board.getMemory(), this.currentPiece.getPiece(), this.next_piece().getPiece()));
 		boolean newPlacement = board.place(currentPiece, currentPiece.position.x, currentPiece.position.y);
 		if(newPlacement == false) {
 			this.setGameOver();
 		}
 	}
 	
-	public Brain.Move[] moves() {
-		return board.moves(currentPiece);
-	}
-	
-	private void updateScore(int lines) {
-		switch(lines) {
-			case 1: 
-				this.score += 40;
-				break;
-			case 2: 
-				this.score += 100;
-				break;
-			case 3: 
-				this.score += 300;
-				break;
-			case 4: 
-				this.score += 1200;
-				
-		}
-	}
-	
-	public int getScore() {
-		return score;
-	}
-
-	public int getLinesCleared() {
-		return linesCleared;
-	}
-	
-	public boolean isOver() {
-		return this.gameOver;
-	}
-	
 	private void setGameOver() {
-		board.setAllPieces(Piece.L);
 		board.commit();
 		this.gameOver = true;
-	}	
+		System.out.println("GAME_OVER");
+	}
 }
