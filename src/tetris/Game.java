@@ -1,5 +1,6 @@
 package tetris;
 
+import java.util.ArrayList;
 import java.util.Stack;
 
 import helpers.AUtils;
@@ -58,11 +59,28 @@ public class Game implements GameActions, PlayerActions, GameInfo{
 	public int get(int x, int y) {
 		return board.getBlock(x, y);
 	}
-
+	
 	@Override
-	public String[] moves() {
-		// TODO Auto-generated method stub
-		return null;
+	public Move[] moves() {
+		ArrayList<Move> moves = new ArrayList<Move>();
+		int xBound = Board.COLS - this.currentPiece.getWidth()+1;
+		int shift = currentPiece.getGap();
+		for(int spin = 0; spin < 4; spin++) {
+			xBound = Board.COLS - p.getWidth()+1;
+			shift = currentPiece.getGap();
+			for(int x = 0-shift; x < xBound-shift; x++) {
+				int y = this.dropHeight(currentPiece, x);
+				moves.add(new Move((PieceInstance) p.clone(),x,y));
+
+			}
+			p.rotate();
+	}
+
+		Brain.Move[] m = new Brain.Move[moves.size()];
+		for(int i = 0; i < m.length; i++) {
+			m[i] = moves.get(i);
+		}
+		return m;
 	}
 
 	@Override
