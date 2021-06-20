@@ -1,7 +1,6 @@
 package engine;
 
 public abstract class Loop {
-	public static final int MS_PER_UPDATE = 17;
 	public boolean running = false;
 	private Worker worker = new Worker();
 	
@@ -18,8 +17,16 @@ public abstract class Loop {
 		}
 	}
 	
-	protected void addJob(Job job, int ms) {
-		worker.addJob(job, ms);
+	protected void addJob(Job job, int period) {
+		worker.addJob(job, period);
+	}
+	
+	protected void addJob(Job job, int period, int msToExecution) {
+		worker.addJob(job, period, msToExecution);
+	}
+	
+	protected void removeJob(Job job) {
+		worker.removeJob(job);
 	}
 	
 	

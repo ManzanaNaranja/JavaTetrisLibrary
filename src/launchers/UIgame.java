@@ -1,21 +1,14 @@
 package launchers;
 
-import java.awt.Color;
-import java.awt.Graphics;
-
-import ai.Brain;
-import ai.FurryBrain;
 import engine.Job;
 import engine.Loop;
 import tetris.Game;
-import tetris.PieceInstance;
-import ui.Renderer;
 import ui.Window;
 import ui.input.KeyManager;
 
 // High Score: 6180 (300ms)
 
-public class NormalGame extends Loop{
+public class UIgame extends Loop{
 	Game game;
 	Window window;
 	KeyManager keyManager;
@@ -23,31 +16,36 @@ public class NormalGame extends Loop{
 	Job gravity = new Job() {
 		@Override
 		public void dothis() {
-			game.moveDown();
-			window.leftPanel.position(game.board);					
-			window.rightPanel.setScore(game.getScore());
-			window.rightPanel.setLinesCleared(game.getLinesCleared());	
+			game.down();
+			window.leftPanel.position(game.board());					
+//			window.rightPanel.setScore(game.getScore());
+			window.rightPanel.setLinesCleared(game.lines_cleared());	
 		}	
 	};
+
 	
 	Job input = new Job() {
 		@Override
 		public void dothis() {
 			keyManager.tick();
 			if(KeyManager.JW) game.rotate(); 
-			if(KeyManager.JA) game.moveLeft();
-			if(KeyManager.JD) game.moveRight();
-			if(KeyManager.JS) game.moveDown();
+			
+			if(KeyManager.JA) game.left();
+			if(KeyManager.JD) game.right();
+		
+			if(KeyManager.JS) game.undo(); // game.down();
+			
 			if(KeyManager.JSpace) game.drop();
-			window.leftPanel.position(game.board);
+			window.leftPanel.position(game.board());
 		}
 	};
 	
-	public NormalGame() {
+	public UIgame() {
 		initialize();
 		this.addJob(gravity, 300);
 		this.addJob(input, 17);
-		this.start();			
+		this.start();	
+		
 	}	
 	
 	private void initialize() {
@@ -59,6 +57,6 @@ public class NormalGame extends Loop{
 	}
 
 	public static void main(String[] args) {
-		new NormalGame();
+		new UIgame();
 	}
 }

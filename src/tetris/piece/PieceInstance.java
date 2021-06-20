@@ -1,10 +1,9 @@
-package tetris;
+package tetris.piece;
 
 import java.awt.Point;
 
-import helpers.ANumbers;
 
-public class PieceInstance implements Cloneable {
+public class PieceInstance {
 	private Piece piece;
 	public int rotation;
 	public Point position;
@@ -46,6 +45,10 @@ public class PieceInstance implements Cloneable {
 		this.rotation = ++rotation % 4;
 	}
 	
+	public void unrotate() {
+		this.rotation--;  if(rotation < 0) rotation = 3;
+	}
+	
 	public int getWidth() {
 		int minIndex = 999;
 		int maxIndex = -999;
@@ -62,32 +65,8 @@ public class PieceInstance implements Cloneable {
 		return maxIndex - minIndex + 1;
 	}
 	
-	public void unrotate() {
-		this.rotation--;  if(rotation < 0) rotation = 3;
-	}
-	
 	public String toString() {
 		return this.piece.toString(this.rotation);
-	}
-	
-	public Object clone() {
-		try {
-			return super.clone();
-		} catch (CloneNotSupportedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
-	}
-	
-	
-	public static void main(String[] args) {
-		PieceInstance p = new PieceInstance(Piece.I);
-		p.rotate();
-		System.out.println(p.piece.toString(p.rotation));
-		System.out.println(p.getWidth());
-		System.out.println(p.getGap());
-	
-	}
+	}	
 	
 }

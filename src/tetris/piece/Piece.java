@@ -1,6 +1,9 @@
-package tetris;
+package tetris.piece;
 
 import java.awt.Color;
+import java.util.ArrayList;
+
+import helpers.AVector;
 
 public enum Piece {
 
@@ -24,6 +27,23 @@ public enum Piece {
 	
 	public int[] getBlocks() {
 		return blocks;
+	}
+	
+	public AVector[] getPoints(int rotation) {
+		ArrayList<AVector> list = new ArrayList<AVector>();
+		int blocks = this.getBlocks()[rotation];
+		int row = 0;
+		int col = 0;
+		for(int bit = 0x8000;  bit > 0; bit = bit >> 1) {
+			if((blocks & bit) != 0) {
+				list.add(new AVector(col, row));
+				this.memory[m.getY() + row][m.getX() + col] = p.getPiece().getValue();
+			}
+			if(++col == 4) {
+				col = 0;
+				row++;
+			}
+		}
 	}
 
 	public Color getColor() {
