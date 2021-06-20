@@ -33,6 +33,10 @@ public class PieceInstanceBag {
 	public void shuffle() {
 		Collections.shuffle(contents);
 	}
+	
+	public void setnext(PieceInstance p) {
+		contents.set(0, p);
+	}
 
 	public PieceInstance getnext() {
 		if(contents.size() == 0) {
