@@ -1,25 +1,22 @@
 package tetris;
 
 import java.util.ArrayList;
-import java.util.Stack;
 
 import helpers.AUtils;
-import tetris.piece.Piece;
+import tetris.piece.Bag;
 import tetris.piece.PieceInstance;
-import tetris.piece.PieceInstanceBag;
 import tetris.structure.GameActions;
 import tetris.structure.GameInfo;
 import tetris.structure.PlayerActions;
 
 public class Game implements GameActions, PlayerActions, GameInfo{
 	
-	private PieceInstanceBag bag;
+	public Bag bag;
 	private PieceInstance currentPiece;
-	private Stack<PieceInstance> nextPieces;
+	private BoardHistory boardHistory;
 	private Board board;
 	private int linesCleared = 0;
 	private boolean gameOver = false;
-	private History history;
 	
 	public Game() {
 		this.reset();
@@ -34,24 +31,27 @@ public class Game implements GameActions, PlayerActions, GameInfo{
 	public int[][] board() {
 		return board.getMemory();
 	}
+	
+	public int[][] clean_board() {
+		return board.getBackupMemory();
+	}
+
 
 	@Override
 	public void ascii() {
 		System.out.println(this.toString());		
 	}
+	
+	public PieceInstance current_piece() {
+		return this.currentPiece;
+	}
 
 	@Override
 	public PieceInstance next_piece() { 
-		if(nextPieces.isEmpty() == false) {
-			return this.nextPieces.peek();
-		}
-		return bag.getnext();
+		return bag.view_next();
 	}
 	
 	private PieceInstance pick_next_piece() {
-		if(nextPieces.isEmpty() == false) {
-			return this.nextPieces.pop();
-		}
 		return bag.pick();
 	}
 
@@ -62,6 +62,9 @@ public class Game implements GameActions, PlayerActions, GameInfo{
 
 	@Override
 	public Move[] moves() {
+		board.undo();
+		int xx = currentPiece.position.x;
+		int yy = currentPiece.position.y;
 		ArrayList<Move> moves = new ArrayList<Move>();
 		int xBound = Board.COLS - currentPiece.getWidth()+1;
 		int shift = currentPiece.getGap();
@@ -79,6 +82,8 @@ public class Game implements GameActions, PlayerActions, GameInfo{
 		for(int i = 0; i < m.length; i++) {
 			m[i] = moves.get(i);
 		}
+		
+		this.board.place(currentPiece,xx,yy);
 		return m;
 	}
 
@@ -150,26 +155,27 @@ public class Game implements GameActions, PlayerActions, GameInfo{
 	}
 
 	@Override
-	public boolean move(Move m) {
-		if(gameOver == true) return false;
+	public int move(Move m) {
+		if(gameOver == true) return -1;
 		Move[] moves = this.moves();
 		for(int i = 0; i < moves.length; i++) {
 			if(m.equals(moves[i])) break;
-			else if(i == moves.length-1) return false;
+			else if(i == moves.length-1) return -1;
 		}
-		if(board.place(m) == false) return false;
-		this.finalizePlacement();
-		return true;
+		board.undo();
+		if(board.place(m) == false) return -1;
+		return this.finalizePlacement();
 	}
+	
+	
 
 	@Override
 	public void undo() { 
-		if(history.undo() == null) return;
-		GameData d = history.getLast();
-		this.board = new Board(AUtils.deepCopy(d.getBoard()));
-		this.currentPiece = d.getCurrentPiece();
-		this.nextPieces.clear();
-		this.nextPieces.addAll(history.getPieceHistory());
+		if(boardHistory.undo() == null) return;
+		this.bag.undo();
+		this.currentPiece = bag.view_prev();
+		this.board = new Board(AUtils.deepCopy(boardHistory.current_state()));
+
 	}
 
 	@Override
@@ -183,26 +189,26 @@ public class Game implements GameActions, PlayerActions, GameInfo{
 	}
 	
 	private void initilizeGame() {
-		nextPieces = new Stack<PieceInstance>();
-		history = new History();
-		bag = new PieceInstanceBag();
+		boardHistory = new BoardHistory();
+		bag = new Bag();
 		this.currentPiece = this.pick_next_piece();
 		this.board = new Board();
-		history.add(new GameData(this.board.getMemory(), this.currentPiece.getPiece(), this.next_piece().getPiece()));
+		boardHistory.add(this.board.getMemory());
 	}
 	
-	private void finalizePlacement() {
-		if(this.game_over() == true) return;
+	private int finalizePlacement() {
+		if(this.game_over() == true) return -1;
 		int lines = board.clearLines();
 		this.linesCleared += lines;
 		
 		board.commit();
 		this.currentPiece = this.pick_next_piece();	
-		history.add(new GameData(this.board.getMemory(), this.currentPiece.getPiece(), this.next_piece().getPiece()));
+		boardHistory.add(this.board.getMemory());
 		boolean newPlacement = board.place(currentPiece, currentPiece.position.x, currentPiece.position.y);
 		if(newPlacement == false) {
 			this.setGameOver();
 		}
+		return lines;
 	}
 	
 	private void setGameOver() {

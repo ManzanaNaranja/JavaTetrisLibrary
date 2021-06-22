@@ -11,8 +11,25 @@ public class Main {
 //			g.right();
 //			g.down();
 //		}
+		
+		System.out.println(g.bag);
+		for(int i = 0; i < 100; i++) {
+			g.drop();
+			g.undo();
+		}
 		g.drop();
+		for(int i = 0; i < 100; i++) {
+			g.drop();
+			g.undo();
+		}
+		g.drop();
+		for(int i = 0; i < 100; i++) {
+			g.drop();
+			g.undo();
+		}
+		g.drop();g.drop();g.drop();g.drop();g.drop();
 		g.ascii();
+		System.out.println(g.bag);
 
 	}
 

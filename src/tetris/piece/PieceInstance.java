@@ -69,4 +69,11 @@ public class PieceInstance {
 		return this.piece.toString(this.rotation);
 	}	
 	
+	public PieceInstance copy() {
+		PieceInstance p = new PieceInstance(this.piece);
+		p.rotation = this.rotation;
+		p.setPosition(this.position.x, this.position.y);
+		return p;
+	}
+	
 }

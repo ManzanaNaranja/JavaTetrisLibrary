@@ -8,20 +8,18 @@ import helpers.AVector;
 public enum Piece {
 
 	
-	I(new int[] {0x0F00, 0x2222, 0x00F0, 0x4444}, "#0F9BD7", 1),
-	J(new int[] {0x8E00, 0x6440, 0x0E20, 0x44C0}, "#E35B02", 2),
-	L(new int[] {0x2E00, 0x4460, 0x0E80, 0xC440}, "#2141C6", 3),
-	O(new int[] {0xCC00, 0xCC00, 0xCC00, 0xCC00}, "#E39F02", 4),
-	S(new int[] {0x6C00, 0x4620, 0x06C0, 0x8C40}, "#59B101", 5),
-	T(new int[] {0x4E00, 0x4640, 0x0E40, 0x4C40}, "#AF298A", 6),
-	Z(new int[] {0xC600, 0x2640, 0x0C60, 0x4C80}, "#D70F37", 7);
+	I(new int[] {0x0F00, 0x2222, 0x00F0, 0x4444}, 1),
+	J(new int[] {0x8E00, 0x6440, 0x0E20, 0x44C0}, 2),
+	L(new int[] {0x2E00, 0x4460, 0x0E80, 0xC440}, 3),
+	O(new int[] {0xCC00, 0xCC00, 0xCC00, 0xCC00}, 4),
+	S(new int[] {0x6C00, 0x4620, 0x06C0, 0x8C40}, 5),
+	T(new int[] {0x4E00, 0x4640, 0x0E40, 0x4C40}, 6),
+	Z(new int[] {0xC600, 0x2640, 0x0C60, 0x4C80}, 7);
 	private final int[] blocks;
-	private final Color color;
 	private int value;
 	
-	Piece(int[] blocks, String color, int value) {
+	Piece(int[] blocks, int value) {
 		this.blocks = blocks;
-		this.color = Color.decode(color);
 		this.value = value;
 	}
 	
@@ -37,17 +35,18 @@ public enum Piece {
 		for(int bit = 0x8000;  bit > 0; bit = bit >> 1) {
 			if((blocks & bit) != 0) {
 				list.add(new AVector(col, row));
-				this.memory[m.getY() + row][m.getX() + col] = p.getPiece().getValue();
 			}
 			if(++col == 4) {
 				col = 0;
 				row++;
 			}
 		}
-	}
-
-	public Color getColor() {
-		return color;
+		
+		AVector[] a = new AVector[list.size()];
+		for(int i = 0; i < a.length; i++) {
+			a[i] = list.get(i);
+		}
+		return a;
 	}
 	
 	public static Piece getPieceByValue(int val) {

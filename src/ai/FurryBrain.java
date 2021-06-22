@@ -1,11 +1,10 @@
 package ai;
 
-import ai.Brain.Move;
 import tetris.Board;
 import tetris.Game;
-import tetris.PieceInstance;
+import tetris.Move;
 
-public class FurryBrain implements Brain{
+public class FurryBrain{
 	
 	private double w1 = -0.22568649650722883;
 	private double w2 = 0.08679520494876472;
@@ -14,27 +13,24 @@ public class FurryBrain implements Brain{
 	private double w5 = 0.15452215909537684;
 	private double w6 = 0.021586109522043928;
 
-	@Override
-	public Brain.Move bestMove(Game game) {
+	public Move bestMove(Game game) {
 		double bestScore = 10000000;
-		Brain.Move bestMove = null;
-		for(Brain.Move move : game.moves()) {
-			game.board.place(move);
-			double eval = this.evaluateBoard(game);
+		Move bestMove = null;
+		for(Move move : game.moves()) {
+			int linesCleared = game.move(move);
+			double eval = this.evaluateBoard(linesCleared, game.clean_board());
 			if(eval < bestScore) {
 				bestScore = eval;
 				bestMove = move;
 				bestMove.score = bestScore;
 			}
-			game.board.undo();
+			game.undo();
 		}
 		return bestMove;
 		
 	}
 
-	public double evaluateBoard(Game game) {
-		 Board board = game.board;
-		 int lines = game.board.clearLines();
+	public double evaluateBoard(int lines, int[][] board) {
 		 int holes = getHoles(board);
 		 int maxHeight = getMaxHeight(board);
 		 int relativeHeight = this.relativeHeight(board);
@@ -44,13 +40,13 @@ public class FurryBrain implements Brain{
 		  return w1 * lines + w2 * maxHeight + w3 * cumulativeHeight + w4 * relativeHeight + w5 * holes + w6 * roughness;
 	}
 	
-	public int relativeHeight(Board board) {
+	public int relativeHeight(int[][] board) {
 		return getMaxHeight(board) - getMinHeight(board);
 	}
 	
-	public int getMaxHeight(Board board) {
+	public int getMaxHeight(int[][] board) {
 	    int maxHeight = -1;
-	    int[] heights = board.heights();
+	    int[] heights = heights(board);
 	    for(int i = 0; i < heights.length; i++) {
 	        if(heights[i] > maxHeight) {
 	        	maxHeight = heights[i];
@@ -59,9 +55,9 @@ public class FurryBrain implements Brain{
 	    return maxHeight;
 	}
 	
-	public int getMinHeight(Board board) {
+	public int getMinHeight(int[][] board) {
 	    int minHeight = 99999999;
-	    int[] heights = board.heights();
+	    int[] heights = heights(board);
 	    for(int i = 0; i < heights.length; i++) {
 	        if(heights[i] < minHeight) {
 	        	minHeight = heights[i];
@@ -70,9 +66,9 @@ public class FurryBrain implements Brain{
 	    return minHeight;
 	}
 	
-	public int cumulativeHeights(Board board) {
+	public int cumulativeHeights(int[][] board) {
 		int sum = 0;
-		int[] heights = board.heights();
+		int[] heights = heights(board);
 	    for(int i = 0; i < heights.length; i++) {
 	        sum += heights[i];
 	    }
@@ -80,9 +76,9 @@ public class FurryBrain implements Brain{
 	}
 	
 	
-	public double getAverageHeight(Board board) {
+	public double getAverageHeight(int[][] board) {
 		    double sum = 0;
-		    int[] heights = board.heights();
+		    int[] heights = this.heights(board);
 		    for(int i = 0; i < heights.length; i++) {
 		      sum += heights[i];
 		    } 
@@ -90,10 +86,33 @@ public class FurryBrain implements Brain{
 		    return avg;
 		    
 	 }
+	
+	public int[] heights(int[][] board) {
+		 return heights(board, Board.ROWS-1);
+	}
+	
+	public int[] heights(int[][] board, int maxHeight) {
+	    int[] heights = new int[Board.COLS];
+	    for(int x = 0; x < Board.COLS; x++) {
+	      heights[x] = getHeightOfColumn(board, x, maxHeight);
+	    }
+		return heights;
+	}
+	
+	private int getHeightOfColumn(int[][] board, int x, int maxHeight) {
+	    int height = Board.ROWS;
+	    
+	    for(int i = 0; i < Board.ROWS; i++) {
+	    	if(board[i][x] == 0) height--;
+	    	else break;
+	    }
+	    
+	    return height;   
+	}
 	 
-	public double roughness(Board board) {
+	public double roughness(int[][] board) {
 		int sum = 0;
-		int[] heights = board.heights();
+		int[] heights = heights(board);
 		for(int i = 1; i < heights.length-1; i++) {
 			int d1 = Math.abs(heights[i-1] - heights[i]);
 			int d2 = Math.abs(heights[i+1] - heights[i]);
@@ -103,13 +122,13 @@ public class FurryBrain implements Brain{
 		return Math.pow(sum, 1.5);
 		
 	}
-	public int getHoles(Board board) {
+	public int getHoles(int[][] board) {
 		    int holes = 0;
-		    int[] heights = board.heights();
+		    int[] heights = heights(board);
 		    
 		    for(int x = 0; x < Board.COLS; x++) {
 		      for(int y = Board.ROWS-1; y >= Board.ROWS - heights[x]; y--) {
-		        if(board.memory[y][x] == 0) {
+		        if(board[y][x] == 0) {
 		          holes++;
 		        }
 		      }

@@ -1,7 +1,7 @@
 package helpers;
 
 public class AVector {
-	private double x, y;
+	public double x, y;
 	
 	public AVector() {
 		this(0,0);
