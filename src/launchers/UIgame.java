@@ -22,7 +22,19 @@ public class UIgame extends Loop{
 		@Override
 		public void dothis() {
 			game.down();
-	     	highlightDroppedPiece();
+			if(game.current_piece().position.y == 1) {
+				FurryBrain f = new FurryBrain();
+				Move m = f.bestMove(game);
+				game.current_piece().position.y = 1;
+				if(m == null) game.drop();
+				else {
+					game.current_piece().rotation = m.getRotation();
+					game.current_piece().position.x = m.getX();
+					
+				}
+			
+			}
+	     	//highlightDroppedPiece();
 			window.leftPanel.position(game.board());					
 			window.rightPanel.setLinesCleared(game.lines_cleared());	
 		}	
@@ -38,14 +50,14 @@ public class UIgame extends Loop{
 			if(KeyManager.JD) game.right();
 			if(KeyManager.JS) game.undo();
 			if(KeyManager.JSpace) game.drop();
-			highlightDroppedPiece();
+			//highlightDroppedPiece();
 			window.leftPanel.position(game.board());
 		}
 	};
 	
 	public UIgame() {
 		initialize();
-		this.addJob(gravity, 300);
+		this.addJob(gravity, 10);
 		this.addJob(input, 17);
 		this.start();	
 		

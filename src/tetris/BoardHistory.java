@@ -5,24 +5,24 @@ import java.util.LinkedList;
 import helpers.AUtils;
 
 public class BoardHistory {
-	private LinkedList<int[][]> data;
+	private LinkedList<BoardData> data;
 	
 	public BoardHistory() {
-		data = new LinkedList<int[][]>();
+		data = new LinkedList<BoardData>();
 	}
 	
-	public void add(int[][] item) {
-		data.add(AUtils.deepCopy(item));
+	public void add(BoardData item) {
+		data.add(new BoardData(AUtils.deepCopy(item.board), item.lines));
 	}
 	
-	public int[][] undo() {
+	public BoardData undo() {
 		if(data.size() > 1) {
 			return data.removeLast();
 		}
 		return null;
 	}
 	
-	public int[][] current_state() {
+	public BoardData current_state() {
 		return data.getLast();
 	}
 }
