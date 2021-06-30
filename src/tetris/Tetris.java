@@ -51,6 +51,8 @@ public class Tetris implements GameActions, PlayerActions, GameInfo{
 	public void setCurrentPiece(PieceInstance p) {
 		this.currentPiece = p;
 		this.bag.changeCurrent(p);
+		board.undo();
+		board.place(this.currentPiece, this.currentPiece.position.x, this.currentPiece.position.y);
 	}
 
 	@Override
