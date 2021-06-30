@@ -1,8 +1,8 @@
 package ai;
 
 import tetris.Board;
-import tetris.Game;
 import tetris.Move;
+import tetris.Tetris;
 
 public class FurryBrain{
 	
@@ -13,7 +13,7 @@ public class FurryBrain{
 	private double w5 = 0.15452215909537684;
 	private double w6 = 0.021586109522043928;
 
-	public Move bestMove(Game game) {
+	public Move bestMove(Tetris game) {
 		double bestScore = 10000000;
 		Move bestMove = null;
 		for(Move move : game.moves()) {

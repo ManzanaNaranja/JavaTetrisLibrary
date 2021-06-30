@@ -10,7 +10,7 @@ import tetris.structure.GameActions;
 import tetris.structure.GameInfo;
 import tetris.structure.PlayerActions;
 
-public class Game implements GameActions, PlayerActions, GameInfo{
+public class Tetris implements GameActions, PlayerActions, GameInfo{
 	
 	public Bag bag;
 	private PieceInstance currentPiece;
@@ -18,8 +18,9 @@ public class Game implements GameActions, PlayerActions, GameInfo{
 	private Board board;
 	private int linesCleared = 0;
 	private boolean gameOver = false;
+	private TetrisEventListener tetrisEventListener = null;
 	
-	public Game() {
+	public Tetris() {
 		this.reset();
 	}
 
@@ -45,6 +46,11 @@ public class Game implements GameActions, PlayerActions, GameInfo{
 	
 	public PieceInstance current_piece() {
 		return this.currentPiece;
+	}
+	
+	public void setCurrentPiece(PieceInstance p) {
+		this.currentPiece = p;
+		this.bag.changeCurrent(p);
 	}
 
 	@Override
@@ -181,6 +187,7 @@ public class Game implements GameActions, PlayerActions, GameInfo{
 
 	@Override
 	public void undo() { 
+		if(gameOver == true) return;
 		if(boardHistory.undo() == null) return;
 		this.bag.undo();
 		this.currentPiece = bag.view_prev();
@@ -219,7 +226,18 @@ public class Game implements GameActions, PlayerActions, GameInfo{
 		if(newPlacement == false) {
 			this.setGameOver();
 		}
+		if(this.tetrisEventListener != null) {
+			if(lines != 0) {
+				tetrisEventListener.linesCleared(lines);
+			}
+			tetrisEventListener.finalizedPiecePlacement();
+			
+		}
 		return lines;
+	}
+	
+	public void addEventListener(TetrisEventListener t) {
+		this.tetrisEventListener = t;
 	}
 	
 	private void setGameOver() {

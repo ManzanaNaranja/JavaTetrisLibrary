@@ -4,15 +4,15 @@ import ai.FurryBrain;
 import engine.Job;
 import engine.Loop;
 import helpers.AVector;
-import tetris.Game;
 import tetris.Move;
+import tetris.Tetris;
+import tetris.TetrisEventListener;
 import ui.Window;
 import ui.input.KeyManager;
 
-// High Score: 6180 (300ms)
 
 public class UIgame extends Loop{
-	Game game;
+	Tetris game;
 	Window window;
 	KeyManager keyManager;
 	
@@ -34,10 +34,26 @@ public class UIgame extends Loop{
 				}
 			
 			}
-	     	//highlightDroppedPiece();
+	     	highlightDroppedPiece();
 			window.leftPanel.position(game.board());					
 			window.rightPanel.setLinesCleared(game.lines_cleared());	
 		}	
+	};
+	
+	TetrisEventListener t = new TetrisEventListener() {
+
+		@Override
+		public void linesCleared(int lines) {
+			System.out.println(lines);
+			
+		}
+
+		@Override
+		public void finalizedPiecePlacement() {
+			// TODO Auto-generated method stub
+			
+		}
+		
 	};
 
 	
@@ -50,21 +66,22 @@ public class UIgame extends Loop{
 			if(KeyManager.JD) game.right();
 			if(KeyManager.JS) game.undo();
 			if(KeyManager.JSpace) game.drop();
-			//highlightDroppedPiece();
+			highlightDroppedPiece();
 			window.leftPanel.position(game.board());
 		}
 	};
 	
 	public UIgame() {
 		initialize();
-		this.addJob(gravity, 10);
+		this.addJob(gravity, 1);
 		this.addJob(input, 17);
 		this.start();	
 		
 	}	
 	
 	private void initialize() {
-		game = new Game();
+		game = new Tetris();
+		game.addEventListener(t);
 		window = new Window(700, 700);
 		keyManager = new KeyManager();
 		window.contentPane.addKeyListener(keyManager);

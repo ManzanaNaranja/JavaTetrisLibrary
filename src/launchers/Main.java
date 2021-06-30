@@ -1,11 +1,11 @@
 package launchers;
 
-import tetris.Game;
+import tetris.Tetris;
 
 public class Main {
 
 	public static void main(String[] args) {
-		Game g = new Game();
+		Tetris g = new Tetris();
 	//	g.right();
 //		for(int i = 0; i < 200; i++) {
 //			g.right();

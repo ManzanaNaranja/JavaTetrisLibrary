@@ -15,6 +15,10 @@ public class Bag {
 		iterator = contents.listIterator(0);
 	}
 	
+	public void changeCurrent(PieceInstance p) {
+		this.iterator.set(p);
+	}
+	
 	public PieceInstance pick() {
 		if(iterator.hasNext() == false) {
 			this.add();
