@@ -54,6 +54,10 @@ public class Tetris implements GameActions, PlayerActions, GameInfo{
 		board.undo();
 		board.place(this.currentPiece, this.currentPiece.position.x, this.currentPiece.position.y);
 	}
+	
+	public void setNextPiece(PieceInstance p) {
+		this.bag.changeNext(p);
+	}
 
 	@Override
 	public PieceInstance next_piece() { 
@@ -172,17 +176,25 @@ public class Tetris implements GameActions, PlayerActions, GameInfo{
 		this.finalizePlacement();
 	}
 
-	@Override
-	public int move(Move m) {
+	
+	public int move(Move m, String flag) {
 		if(gameOver == true) return -1;
-		Move[] moves = this.moves();
-		for(int i = 0; i < moves.length; i++) {
-			if(m.equals(moves[i])) break;
-			else if(i == moves.length-1) return -1;
-		}
+//		Move[] moves = this.moves();
+//		for(int i = 0; i < moves.length; i++) {
+//			if(m.equals(moves[i])) break;
+//			else if(i == moves.length-1) return -1;
+//		}
 		board.undo();
 		if(board.place(m) == false) return -1;
+		if(flag == "noevent") {
+			return this.finalizePlacement(false);
+		}
 		return this.finalizePlacement();
+	}
+	
+	@Override
+	public int move(Move m) {
+		return this.move(m, "");
 	}
 	
 	
@@ -216,7 +228,11 @@ public class Tetris implements GameActions, PlayerActions, GameInfo{
 		boardHistory.add(new BoardData(this.board.getMemory(), this.linesCleared));
 	}
 	
-	private int finalizePlacement() {
+	public int finalizePlacement() {
+		return this.finalizePlacement(true);
+	}
+	
+	private int finalizePlacement(boolean shouldCallEvent) {
 		if(this.game_over() == true) return -1;
 		int lines = board.clearLines();
 		this.linesCleared += lines;
@@ -228,11 +244,10 @@ public class Tetris implements GameActions, PlayerActions, GameInfo{
 		if(newPlacement == false) {
 			this.setGameOver();
 		}
-		if(this.tetrisEventListener != null) {
+		if(shouldCallEvent && this.tetrisEventListener != null) {
 			if(lines != 0) {
 				tetrisEventListener.linesCleared(lines);
 			}
-			tetrisEventListener.finalizedPiecePlacement();
 			
 		}
 		return lines;

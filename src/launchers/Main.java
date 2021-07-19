@@ -1,35 +1,20 @@
 package launchers;
 
+import ai.FurryBrain;
+import tetris.Move;
 import tetris.Tetris;
 
 public class Main {
 
 	public static void main(String[] args) {
 		Tetris g = new Tetris();
-	//	g.right();
-//		for(int i = 0; i < 200; i++) {
-//			g.right();
-//			g.down();
-//		}
+		while(g.game_over() == false) {
+			FurryBrain f = new FurryBrain();
+			Move m = f.bestMove(g);
+			g.move(m);
+			System.out.println(g.lines_cleared());
+		}
 		
-		System.out.println(g.bag);
-		for(int i = 0; i < 100; i++) {
-			g.drop();
-			g.undo();
-		}
-		g.drop();
-		for(int i = 0; i < 100; i++) {
-			g.drop();
-			g.undo();
-		}
-		g.drop();
-		for(int i = 0; i < 100; i++) {
-			g.drop();
-			g.undo();
-		}
-		g.drop();g.drop();g.drop();g.drop();g.drop();
-		g.ascii();
-		System.out.println(g.bag);
 
 	}
 

@@ -17,12 +17,16 @@ public class FurryBrain{
 		double bestScore = 10000000;
 		Move bestMove = null;
 		for(Move move : game.moves()) {
-			int linesCleared = game.move(move);
-			double eval = this.evaluateBoard(linesCleared, game.clean_board());
-			if(eval < bestScore) {
-				bestScore = eval;
-				bestMove = move;
-				bestMove.score = bestScore;
+			game.move(move, "noevent");
+			for(Move m2 : game.moves()) {
+				int linesCleared = game.move(m2, "noevent");
+				double eval = this.evaluateBoard(linesCleared, game.clean_board());
+				if(eval < bestScore) {
+					bestScore = eval;
+					bestMove = move;
+					bestMove.score = bestScore;
+				}
+				game.undo();
 			}
 			game.undo();
 		}

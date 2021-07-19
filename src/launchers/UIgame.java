@@ -47,12 +47,6 @@ public class UIgame extends Loop{
 			System.out.println(lines);
 			
 		}
-
-		@Override
-		public void finalizedPiecePlacement() {
-			// TODO Auto-generated method stub
-			
-		}
 		
 	};
 
@@ -73,7 +67,7 @@ public class UIgame extends Loop{
 	
 	public UIgame() {
 		initialize();
-		this.addJob(gravity, 1);
+		this.addJob(gravity, 5);
 		this.addJob(input, 17);
 		this.start();	
 		

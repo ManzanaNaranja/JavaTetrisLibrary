@@ -19,6 +19,14 @@ public class Bag {
 		this.iterator.set(p);
 	}
 	
+	public void changeNext(PieceInstance p) {
+		if(iterator.hasNext() == false) this.add();
+		this.iterator.next();
+		this.changeCurrent(p);
+		this.iterator.previous();
+		
+	}
+	
 	public PieceInstance pick() {
 		if(iterator.hasNext() == false) {
 			this.add();
