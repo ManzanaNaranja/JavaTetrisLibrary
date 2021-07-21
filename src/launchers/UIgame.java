@@ -1,6 +1,7 @@
 package launchers;
 
-import ai.FurryBrain;
+import ai.furry.FurryBrain;
+import ai.ga.Individual;
 import engine.Job;
 import engine.Loop;
 import helpers.AVector;
@@ -23,7 +24,7 @@ public class UIgame extends Loop{
 		public void dothis() {
 			game.down();
 			if(game.current_piece().position.y == 1) {
-				FurryBrain f = new FurryBrain();
+				FurryBrain f = new FurryBrain(new double[] {-0.5030623668323717, -0.41506546289981094, 0.7475622718654609, 0.9261506530111168, 0.9771274781279766, 0.002196530678791442});
 				Move m = f.bestMove(game);
 				game.current_piece().position.y = 1;
 				if(m == null) game.drop();
