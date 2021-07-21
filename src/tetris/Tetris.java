@@ -19,6 +19,7 @@ public class Tetris implements GameActions, PlayerActions, GameInfo{
 	private int linesCleared = 0;
 	private boolean gameOver = false;
 	private TetrisEventListener tetrisEventListener = null;
+	private boolean debug = false;
 	
 	public Tetris() {
 		this.reset();
@@ -185,7 +186,10 @@ public class Tetris implements GameActions, PlayerActions, GameInfo{
 //			else if(i == moves.length-1) return -1;
 //		}
 		board.undo();
-		if(board.place(m) == false) return -1;
+		if(board.place(m) == false) {
+			if(flag == "allowend") this.setGameOver();
+			return -1;
+		}
 		if(flag == "noevent") {
 			return this.finalizePlacement(false);
 		}
@@ -257,9 +261,19 @@ public class Tetris implements GameActions, PlayerActions, GameInfo{
 		this.tetrisEventListener = t;
 	}
 	
+	public boolean isDebugOn() {
+		return this.debug;
+	}
+	
+	public void setDebug(boolean debug) {
+		this.debug = debug;
+	}
+	
 	private void setGameOver() {
 		board.commit();
 		this.gameOver = true;
-		System.out.println("GAME_OVER");
+		if(this.debug) {
+			System.out.println("GAME_OVER");
+		}
 	}
 }
